@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import pg from "pg";
-import 'dotenv/config'
+import "dotenv/config";
 
 const { Client } = pg;
 
@@ -11,53 +11,61 @@ app.use(cors());
 const port = 3005;
 
 export type CustomerRow = {
-    id: number;
-    name: string;
-    contactName: string;
-    address: string;
-    city: string;
-    postalCode: string;
-    country: string;
+  id: number;
+  name: string;
+  contactName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
 };
 
 type QueryLimit = string | undefined;
 
-async function listCustomers(limit: QueryLimit): Promise<CustomerRow[]> {
-    const DEFAULT_LIMIT = 20;
-    const client = new Client({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || "5432"),
-        database: process.env.DB_DATABASE,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-
-
-    });
-    await client.connect();
-    const res = await client.query(
-        `SELECT * FROM customers LIMIT ${limit || DEFAULT_LIMIT}`
-    );
-    await client.end();
-    return res.rows.map(
-        ({
-            customer_id,
-            customer_name,
-            contact_name,
-            address,
-            city,
-            postal_code,
-            country,
-        }) => ({
-            id: customer_id,
-            name: customer_name,
-            contactName: contact_name,
-            address: address,
-            city: city,
-            postalCode: postal_code,
-            country: country,
-        })
-    );
+async function listCustomers(limit: QueryLimit): Promise<CustomerInfo[]> {
+  const DEFAULT_LIMIT = 20;
+  const client = new Client({
+    host: String(process.env.DB_HOST),
+    port: Number(process.env.DB_PORT),
+    database: String(process.env.DB_DATABASE),
+    user: String(process.env.DB_USER),
+    password: String(process.env.DB_PASSWORD),
+  });
+  await client.connect();
+  const res = await client.query(
+    `SELECT * FROM customers LIMIT ${limit || DEFAULT_LIMIT}`
+  );
+  await client.end();
+  return res.rows.map(
+    ({
+      customer_id,
+      customer_name,
+      contact_name,
+      address,
+      city,
+      postal_code,
+      country,
+    }) => ({
+      id: customer_id,
+      name: customer_name,
+      contactName: contact_name,
+      address: address,
+      city: city,
+      postalCode: postal_code,
+      country: country,
+    })
+  );
 }
+
+type CustomerInfo = {
+  id: string;
+  name: string;
+  contactName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+};
 
 // type OrderRow = {
 //     id: number;
@@ -121,16 +129,16 @@ async function listCustomers(limit: QueryLimit): Promise<CustomerRow[]> {
 // }
 
 app.get("/", (req, res) => {
-    console.log(["API called 3005 only waiting to connect database server 5432"]);
-    res.send("Hello World!");
+  console.log(["API called 3005 only waiting to connect database server 5432"]);
+  res.send("Hello World!");
 });
 
 app.get("/customers", async (req, res) => {
-    console.log(["API called 3005 and db server 5432!"]);
-    console.log(req.query.limit);
-    const { limit } = <{ limit: string | undefined }>req.query;
-    const result = await listCustomers(limit);
-    res.send(JSON.parse(JSON.stringify(result)));
+  console.log(["API called 3005 and db server 5432!"]);
+  console.log(req.query.limit);
+  const { limit } = <{ limit: string | undefined }>req.query;
+  const result = await listCustomers(limit);
+  res.send(JSON.parse(JSON.stringify(result)));
 });
 
 // app.get("/orders", async (req, res) => {
@@ -148,5 +156,5 @@ app.get("/customers", async (req, res) => {
 // });
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });
