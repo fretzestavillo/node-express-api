@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "nodenext",
+      "outDir": "./dist/backend",
+      "rootDir": "./src/server/backend",
+      "strict": true,
+      "esModuleInterop": true
+    },
+    "include": ["src/server/backend/**/*.ts"]
+  }
+  

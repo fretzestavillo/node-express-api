@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "nodenext",
+      "moduleResolution": "nodenext",
+      "outDir": "./dist/api",
+      "rootDir": "./src/server/api",
+      "strict": true,
+      "esModuleInterop": true,
+      "paths": {
+      "@env/*": ["./src/server/api/main.ts"],
+    }
+    },
+    "include": ["src/server/api/**/*.ts"]
+  }
+  

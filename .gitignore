@@ -1,0 +1,4 @@
+.env
+node_modules
+practice
+package-lock.json

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>I'm just a file</h1>
+
+    <button id="getUsersButton">Give me users!</button>
+    <h2>Users List</h2>
+    <ul id="usersList">
+      <li>Loading users...</li>
+    </ul>
+  </body>
+  <script>
+    const getUsersButton = document.querySelector("#getUsersButton");
+    const usersList = document.querySelector("#usersList");
+    getUsersButton.addEventListener("click", handleButtonClick);
+
+    async function handleButtonClick(evt) {
+      const raw = await fetch("http://localhost:3005/customers?limit=20", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const customers = await raw.json();
+      console.log({ customers });
+      populateUsersList(customers);
+    }
+
+    function createListElement(listData) {
+      const li = document.createElement("li");
+      li.textContent = `${listData.id} - ${listData.name} - ${listData.contactName} - ${listData.postalCode}`;
+      return li;
+    }
+
+    function populateUsersList(usersData) {
+      const listItem = usersData.map((user) => createListElement(user));
+      usersList.innerHTML = "";
+      usersList.append(...listItem);
+      console.log({ listItem });
+    }
+  </script>
+</html>
